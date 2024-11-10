@@ -47,13 +47,13 @@ class Game(Frame):
 
     def setup_game(self):
         #create rooms
-        r1 = Room("Room1", os.path.join("images", "room1.gif" ))        
+        r1 = Room("Room1", os.path.join("images", "room1.gif" ))       
         r2 = Room("Room2", os.path.join("images", "room2.gif" ))        
         r3 = Room("Room3", os.path.join("images", "room3.gif" ))        
         r4 = Room("Room4", os.path.join("images", "room4.gif" ))        
 
         #add exits to rooms
-        r1.add_exit("east", r2)
+        r1.add_exit("east", r2, "key")  #locked door
         r1.add_exit("south", r3)
 
         r2.add_exit("west", r1)
@@ -87,7 +87,7 @@ class Game(Frame):
 
         #set the starting room for the game
         self.current_room = r1
-
+        print(f"{r1.locked_exits["east"]}")   
     def setup_gui(self):
 
         #the input element
@@ -152,12 +152,39 @@ class Game(Frame):
     def handle_go(self, destination):
         status = Game.STATUS_BAD_EXIT
         if destination in self.current_room.exits:   #exits are in dictionary
-            self.current_room = self.current_room.exits[destination]
-            status = Game.STATUS_ROOM_CHANGE
+            if destination in self.current_room.locked_exits:
+                status = f"The {destination} door is locked. Must need a Key"
+            else:
+                self.current_room = self.current_room.exits[destination]
+                status = Game.STATUS_ROOM_CHANGE
 
 
         self.set_status(status)
         self.set_image()
+
+    #New method for using items
+    def handle_use(self, item: str):
+        status = Game.STATUS_BAD_GRABBABLE
+        if item in self.inventory:
+            #item is not used yet
+            used = False
+            #iterate through locked door exits
+            for exit in self.current_room.locked_exits:
+                #check if item is required for an exit
+                if self.current_room.unlock_exit(exit, item) == True:
+                    status = f"You used the {item} to unlock the {exit} door"
+                    print(f"{self.current_room.locked_exits}")
+                    #item has now been used
+                    used = True
+                    break
+            if not used:
+                status = f"You used the {item}, but nothing happened"
+        self.set_status(status)
+
+                
+            
+
+            
 
     def handle_look(self, item):
         status = Game.STATUS_BAD_ITEM
@@ -211,6 +238,7 @@ class Game(Frame):
             case "go": self.handle_go(noun)
             case "look": self.handle_look(noun)
             case "take": self.handle_take(noun)
+            case "use": self.handle_use(noun)
 
         self.clear_entry()
         

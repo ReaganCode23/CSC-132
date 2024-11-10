@@ -1,7 +1,6 @@
 # Name: Reagan Jose
 #Description: Room Adventure with a GUI
 
-
 from tkinter import Tk
 from game import Game
 
