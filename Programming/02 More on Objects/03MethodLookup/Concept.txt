@@ -1,0 +1,5 @@
+Polymorphism- the idea of presenting multiple ofrms of something like an interface
+
+Method lookup: A form of Polymorhpism
+    A superclass has method but it's sublclass does not have that method. 
+    But we call that on the subclass and python finds method in the superclass.

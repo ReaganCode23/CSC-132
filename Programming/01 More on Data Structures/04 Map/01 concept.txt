@@ -1,0 +1,14 @@
+Map
+    -A "function"(actually a class) that 
+    maps its inputs to some output
+
+inputs
+    - a function that returns something
+    - an Iterable (like a list)
+
+Returns:
+    - a map object that we usually convert to a list
+
+The output data is the same
+
+

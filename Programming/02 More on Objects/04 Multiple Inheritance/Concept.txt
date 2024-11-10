@@ -1,0 +1,9 @@
+Multiple Inheritance:
+    When one class inherits from multiple classes directly.
+    What it is not:
+        When a class has a superclass and then that super class has a super class.
+        This is still single inheritance, just multiple classes with single inheritance
+
+    Not every language that supports OOP supports multiple inheritance. Python does.
+
+

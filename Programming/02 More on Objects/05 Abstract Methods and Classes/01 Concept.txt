@@ -1,0 +1,14 @@
+Abstract Methods:
+    Methods that are intended to be implemented in 
+    subclasses of the class with the abstract method.
+    A way of promising that any sublasses will
+    provide implementation details.
+
+Abstract Class:
+    A class designed to never be instantiated.
+    Meant to serve as a template for its subclasses.
+
+Concrete Class:
+    A clas that can be instantiated and was
+    designed to be instantiated.
+    

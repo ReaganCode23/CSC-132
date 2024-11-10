@@ -1,0 +1,4 @@
+Sets in Python are collections of things are also mathematical sets.
+
+In sets, items are unique (items can only appear once in a set)
+Sets are unordered

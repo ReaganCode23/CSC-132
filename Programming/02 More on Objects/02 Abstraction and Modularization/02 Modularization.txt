@@ -1,0 +1,6 @@
+Modularization:
+    The concept of dividing a whole into well defined parts that can built and examinded separately.
+    Modularization makes maintaining your code easier
+
+Ex: A car simulation app:
+    The act of having specific classes like Car, Truck, Airplane, ext. is a form of modularization.

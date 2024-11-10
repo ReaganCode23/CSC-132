@@ -1,0 +1,14 @@
+Filter
+    -technically a class, (in python) 
+    but we will treat it like a function
+
+Input: 
+    1. a function that return true/false
+    2. an interable (data that can be iterated over)
+       typically a list
+
+Return:
+    - a filter object that we frequently convwert to a list
+    - the items in that list are the items that the function
+    would return true for.
+    

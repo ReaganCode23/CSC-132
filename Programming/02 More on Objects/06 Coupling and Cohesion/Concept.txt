@@ -1,0 +1,15 @@
+Coupling and Cohesion
+
+A unit is any reasonable self-contained component
+    Ex: a function, a class, a file, a set of files in a folder
+
+Coupling:
+    - The linking of two separate units
+    - Goal is loosely coupled units (not dependent on each other)
+    - Tightly coupled units are generally considered bad practice
+
+Cohesion:
+    - refers to the "number" of AND diversity of tasks that signle unit does
+    - High Cohesion means a unit is only responsible for 1 single task
+    - Low Cohesion means it is responsible for many tasks
+    

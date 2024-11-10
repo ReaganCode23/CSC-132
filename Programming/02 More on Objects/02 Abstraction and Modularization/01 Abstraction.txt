@@ -1,0 +1,6 @@
+Def: Abstraction - the ability to ignore the details of parts of a system and focus on a higher level.
+
+Ex: Google Maps; Zooming in and out gives different details/levels of abstration.
+
+Ex: In python programming, do you need to now how the print function makes text appear in the terminal? NO
+

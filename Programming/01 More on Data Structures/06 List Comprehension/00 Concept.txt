@@ -1,0 +1,8 @@
+List comprehension
+    -a construct that lets you create a list in place
+    and fill it with values(all in on line)
+
+
+This is very "Pythonic"
+
+Warning: Can make your code less readable.

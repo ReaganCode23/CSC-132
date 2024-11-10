@@ -1,0 +1,7 @@
+Dictionaries
+    -set of key:value pairs
+    -keys are unique
+    - values are not unique
+
+Note: Never assume an order for a dictionary
+However, pytnon 3.7+, maintatins insertion order

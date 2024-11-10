@@ -1,0 +1,12 @@
+Reduce
+    -reduces a collection of values into 1 single value
+        as specified by a function
+
+Takes in:
+    -a function that has 2 parameters
+    -an iterable (like a list)
+
+Returns:
+    - the result of applying that function to 
+    every item in the list, one after the other.
+
