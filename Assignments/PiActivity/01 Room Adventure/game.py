@@ -212,12 +212,14 @@ class Game(Frame):
             if self.current_room.name == "Room2":
                 status = "Patrick loved the music and he dropped a knife out of his mayonaise. You can probably pick it up"
             else:
-                status = "You played the music gracefully although no one seemed to here"
+                status = "You played the music gracefully although no one seemed to hear"
 
         elif item == "knife":
             #check if in room with squidward
             if self.current_room.name == "Room4":
                 status = "Squidward screamed SPongebobbb!! as he fell to the ground in death. Turns out you were spongebob the whole time. He droped a key. You can probably pick it up"
+            elif self.current_room.name == "Room2":
+                status = "Patrick blocked your knife attack with his mayonaise jar. Now he is mad. Maybe you should try killing someone else"
             else:
                 status = "You might need to find someone to use that on lol"
         elif item == "sponge":

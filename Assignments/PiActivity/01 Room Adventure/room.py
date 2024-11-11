@@ -54,12 +54,12 @@ class Room:
 
     def __str__(self) -> None:
         result = f"You are in {self.name}\n"
-        result += f"You see:"
+        result += f"You see: "
         for item in self.items.keys():
             result += item + " "
         result += "\n"
 
-        result += "Exits"
+        result += "Exits: "
         for exit in self.exits.keys():
             result += exit + " "
         
