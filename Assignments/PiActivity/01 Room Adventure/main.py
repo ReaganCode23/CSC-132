@@ -1,4 +1,5 @@
-# Name: Reagan Jose
+# Authors: Reagan Jose, Justin Little
+#Date: 11/10/2024
 #Description: Room Adventure with a GUI
 
 from tkinter import Tk
