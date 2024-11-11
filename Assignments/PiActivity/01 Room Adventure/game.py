@@ -21,7 +21,7 @@ class Game(Frame):
     EXIT_ACTIONS = ["exit", "quit", "q", "bye"]
 
     #Some statuses
-    STATUS_DEFAULT = "I don't understand. Try verb noun. Valid verbs are go, look, take."
+    STATUS_DEFAULT = "I don't understand. Try verb noun. Valid verbs are go, look, take, use(noun does not matter, uses item equiped)"
     STATUS_DEAD = "You are dead."
     STATUS_BAD_EXIT = "Invalid exit."
     STATUS_ROOM_CHANGE = "Room Changed"
@@ -42,6 +42,8 @@ class Game(Frame):
         """
 
         self.inventory = []
+        #Sets default for equipped item to None
+        self.equipped_item = None
         Frame.__init__(self, parent)
         self.pack(fill=BOTH)
 
@@ -53,41 +55,41 @@ class Game(Frame):
         r4 = Room("Room4", os.path.join("images", "room4.gif" ))        
 
         #add exits to rooms
-        r1.add_exit("east", r2, "key")  #locked door
+        r1.add_exit("east", r2)
         r1.add_exit("south", r3)
 
         r2.add_exit("west", r1)
         r2.add_exit("south", r4)
 
-        r3.add_exit("nort", r1)
+        r3.add_exit("north", r1)
         r3.add_exit("east", r4)
 
         r4.add_exit("west", r3)
         r4.add_exit("north", r2)
-        r4.add_exit("south", None)
+        r4.add_exit("south", None, "key") #locked room
 
         #add itmes to rooms
-        r1.add_item("chair", "Its made of means in a bad.")
+        r1.add_item("chair", "Its made of beans in a bag.")
         r1.add_item("tv", "Its playing Spongebob.")
+        r1.add_item("note", "I can't find my key and I'm made because it leads to an awesome place...")
         
-        r2.add_item("knife", "It's Rusted")
+        r2.add_item("patrick", "He's playing the mayonaises. He's also in the mood for music. Perhaps play some for him?")
         r2.add_item("tv", "It's also playing spongebob")
 
         r3.add_item("sponge", "It's just a sponge")
         r3.add_item("bob", "It's a guy named bob")
 
-        r4.add_item("squidward", "He's playing the clarinet")
-        r4.add_item("patrick", "He's playing the mayonaises")
+        r4.add_item("squidward", "His clarinet is laying unguarded. You could probably take it")
+        r4.add_item("Locked Door", "The south exit door is locked for some reason. Must be something amazing on th eother side.")
 
         #add grabbables 
-        r1.add_grabbable("key")
+        r4.add_grabbable("key")
         r2.add_grabbable("knife")
         r3.add_grabbable("sponge")
         r4.add_grabbable("clarinet")
 
         #set the starting room for the game
-        self.current_room = r1
-        print(f"{r1.locked_exits["east"]}")   
+        self.current_room = r1   
     def setup_gui(self):
 
         #the input element
@@ -109,7 +111,7 @@ class Game(Frame):
         self.image_container.pack(side = LEFT, fill=Y)
         self.image_container.pack_propagate(False)
         #the info area
-        text_container_width = Game.WIDTH // 2
+        text_container_width = 600
         text_container = Frame(self, width=text_container_width)
         text_container.pack(side=RIGHT, fill=Y)
         text_container.pack_propagate(False)
@@ -122,6 +124,31 @@ class Game(Frame):
         )
 
         self.text.pack(fill=Y, expand=1)
+
+        # Inventory label
+        self.inventory_label = Label(self, text="Inventory", bg="lightgrey", fg="black", font=("Helvetica", 14))
+        self.inventory_label.pack(side=BOTTOM, fill=X)
+
+        # Inventory display container 
+        self.inventory_frame = Frame(text_container, width=Game.WIDTH // 2, height=100, bg="lightgrey") 
+        self.inventory_frame.pack(side=BOTTOM, fill=X)
+        self.inventory_images = []
+        self.inventory_labels = []
+
+
+    #Displays images of items in inventory
+    def update_inv_display(self):
+        for i, item in enumerate(self.inventory):
+            img = PhotoImage(file=f"images/{item.lower()}.gif")  # Assumes each item has a corresponding image file
+            if item == self.equipped_item:  #check if item is equiped and highlights blue
+                label = Label(self.inventory_frame, image=img, bg="blue")
+                print("highlighted blue")
+            else:
+                label = Label(self.inventory_frame, image=img, bg="white")
+            label.grid(row=0, column=i, padx=5)
+            self.inventory_images.append(img)
+            self.inventory_labels.append(label)
+        
 
     def set_image(self):
         if self.current_room == None:
@@ -165,7 +192,7 @@ class Game(Frame):
     #New method for using items
     def handle_use(self, item: str):
         status = Game.STATUS_BAD_GRABBABLE
-        if item in self.inventory:
+        if item == "key":
             #item is not used yet
             used = False
             #iterate through locked door exits
@@ -179,12 +206,37 @@ class Game(Frame):
                     break
             if not used:
                 status = f"You used the {item}, but nothing happened"
+
+        elif item == "clarinet":
+            #check if in room with patrick
+            if self.current_room.name == "Room2":
+                status = "Patrick loved the music and he dropped a knife out of his mayonaise. You can probably pick it up"
+            else:
+                status = "You played the music gracefully although no one seemed to here"
+
+        elif item == "knife":
+            #check if in room with squidward
+            if self.current_room.name == "Room4":
+                status = "Squidward screamed SPongebobbb!! as he fell to the ground in death. Turns out you were spongebob the whole time. He droped a key. You can probably pick it up"
+            else:
+                status = "You might need to find someone to use that on lol"
+        elif item == "sponge":
+            status = "the sponge looked at you with deep concering eyes"
+        else:
+            status = "You must equip an item before using it"
         self.set_status(status)
 
-                
-            
-
-            
+    
+    #Handles when an item is equipped 
+    def handle_equip(self, item_name):
+        if item_name in self.inventory:
+            self.equipped_item = item_name
+            #highlight equiped item
+            self.update_inv_display()
+            self.set_status(f"Sucessfully Equipped {self.equipped_item}")
+        else:
+            self.set_status(f"You don't have {item_name} in your inventory.")
+          
 
     def handle_look(self, item):
         status = Game.STATUS_BAD_ITEM
@@ -199,6 +251,8 @@ class Game(Frame):
         if grabbable in self.current_room.grabbables:  #this is just a list
             self.inventory.append(grabbable)
             self.current_room.delete_grabbable(grabbable)
+            #Calls update inv display to put the grabbed items image on screen
+            self.update_inv_display()
             status = Game.STATUS_GRABBED
         self.set_status(status)
 
@@ -238,7 +292,10 @@ class Game(Frame):
             case "go": self.handle_go(noun)
             case "look": self.handle_look(noun)
             case "take": self.handle_take(noun)
-            case "use": self.handle_use(noun)
+            #New verb for using an item that is equiped
+            case "use": self.handle_use(self.equipped_item)
+            #New verb for when you want to equip an item
+            case "equip": self.handle_equip(noun)
 
         self.clear_entry()
         
