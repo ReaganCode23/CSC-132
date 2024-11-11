@@ -1,3 +1,9 @@
+//Name: Reagan Jose
+//Date: 11/11/2024
+//Description: Room Adventure... one last time... finally... make it stop...
+
+import java.util.Scanner;
+
 public class RoomAdventure{
     // game class
     /*
@@ -6,13 +12,102 @@ public class RoomAdventure{
     //static means it belongs to the class
     private static Room currentRoom;
     private static String[] inventory = {null, null, null, null, null};
-    private static String[] status;
+    private static String status;
 
     //constants - final makes it a constant
     final private static String DEFAULT_STATUS = "Sottry, I don't undestand. Try [verb] [noun]";
 
     public static void main(String[] args){
         setupGame();
+    
+        //while loop (our main loop for this)
+        while (true){
+            System.out.println(currentRoom.toString());
+            System.out.print("Inventory: ");
+            
+            //print out everything in the inventory
+            for (int i = 0; i < inventory.length; i++){
+                System.out.print(inventory[i] + " ");   //getting a value from an array using its index
+            }
+            System.out.println("\nWhat would you like to do? ");
+
+            //taking input
+            Scanner s = new Scanner(System.in);
+            String input = s.nextLine();
+
+            //processing our input
+            String[] words = input.split(" ");
+
+            if (words.length != 2){
+                status = DEFAULT_STATUS;
+                continue;
+            }
+            String verb = words[0];
+            String noun = words[1];
+
+            switch(verb){
+                case "go":
+                    handleGo(noun);
+                    break;
+                case "look":
+                    handleLook(noun);
+                    break;
+                case "take":
+                    handleTake(noun);
+                    break;
+                default:
+                    status = DEFAULT_STATUS;
+            }
+
+            System.out.println(status);
+
+
+        }
+
+    }
+    private static void handleGo(String noun){
+        String[] exitDirections = currentRoom.getExitDirections();
+        Room[] exitDestinations = currentRoom.getExitDestinations();
+
+        status = "I don't see that room";
+        for(int i = 0; i < exitDirections.length; i++){
+            if(noun.equals(exitDirections[i])){
+                if(noun.equals(exitDirections[i])){
+                    currentRoom = exitDestinations[i];
+                    status = "Changed Room";
+                    break;   
+                }
+            }
+        }
+    }
+
+    private static void handleLook(String noun){
+        String [] items = currentRoom.getItems();
+        String [] itemDescriptions = currentRoom.getItemDescriptions();
+
+        status = "I don't see that item";
+        for(int i=0; i < items.length; i++){
+            if (noun.equals(items[i])){
+                status = itemDescriptions[i];
+                break;
+            }
+        }
+
+    }
+
+    private static void handleTake(String noun){
+        status = "I can't grab that";
+        for(int i = 0; i < currentRoom.grabbables.length; i++){
+            if (noun.equals(currentRoom.grabbables[i])){
+                for (int j = 0; j < inventory.length; j++){
+                    if (inventory[j] == null){
+                        inventory[j] = noun;
+                        status = String.format("Added %s to the inventory.", noun);
+                        break;
+                    }
+                }
+            }
+        }
 
     }
 
@@ -26,6 +121,12 @@ public class RoomAdventure{
         String[] room1ExitDirections = {"east", "south"}; //initializing an array
         Room[] room1ExitDestinations = {room2, room3};
 
+
+        String[] room1Items ={
+            "Chair",
+            "Desk"
+        };
+
         String[] room1ItemDescriptions = {
             "It is a char.",
             "It is a desk. There is a key on it"
@@ -36,8 +137,44 @@ public class RoomAdventure{
         room1.setExitDirections(room1ExitDirections);
         room1.setExitDestinations(room1ExitDestinations);
         room1.setItemDescriptions(room1ItemDescriptions);
+        room1.setItems(room1Items);
         room1.grabbables = room1Grabbables;
+
+        //setup Room 2
+        String[] room2ExitDirections = {"east", "south"}; //initializing an array
+        Room[] room2ExitDestinations = {room2, room3};
+
+        String[] room2ItemDescriptions = {
+            "It is a char.",
+            "It is a desk. There is a key on it"
+        };
+
+        String[] room2Grabbables = {"key"};
+
+        room2.setExitDirections(room2ExitDirections);
+        room2.setExitDestinations(room2ExitDestinations);
+        room2.setItemDescriptions(room2ItemDescriptions);
+        room2.grabbables = room2Grabbables;
+
+        //setup Room 3
+        String[] room3ExitDirections = {"east", "south"}; //initializing an array
+        Room[] room3ExitDestinations = {room2, room3};
+
+        String[] room3ItemDescriptions = {
+            "It is a char.",
+            "It is a desk. There is a key on it"
+        };
+
+        String[] room3Grabbables = {"key"};
+
+        room3.setExitDirections(room3ExitDirections);
+        room3.setExitDestinations(room3ExitDestinations);
+        room3.setItemDescriptions(room3ItemDescriptions);
+        room3.grabbables = room3Grabbables;
+
+        currentRoom = room1;
     }
+
 
 
 
@@ -126,11 +263,6 @@ class Room{
 
         return result;
     }
-
-
-
-
-
-    // not doing getter/setter for grabbles since it is public already.
+ 
 
 }
