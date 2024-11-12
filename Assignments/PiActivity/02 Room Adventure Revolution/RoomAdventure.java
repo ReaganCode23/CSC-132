@@ -3,6 +3,8 @@
 //Description: Room Adventure... one last time... finally... make it stop...
 
 import java.util.Scanner;
+//Array List package
+import java.util.ArrayList;
 
 public class RoomAdventure{
     // game class
@@ -11,7 +13,7 @@ public class RoomAdventure{
     */
     //static means it belongs to the class
     private static Room currentRoom;
-    private static String[] inventory = {null, null, null, null, null};
+    private static ArrayList<String> inventory = new ArrayList<String>();
     private static String status;
 
     //constants - final makes it a constant
@@ -26,8 +28,8 @@ public class RoomAdventure{
             System.out.print("Inventory: ");
             
             //print out everything in the inventory
-            for (int i = 0; i < inventory.length; i++){
-                System.out.print(inventory[i] + " ");   //getting a value from an array using its index
+            for (int i = 0; i < inventory.size(); i++){     //.size() gives size of the ArrayList
+                System.out.print(inventory.get(i) + " ");   //getting index value from ArrayList
             }
             System.out.println("\nWhat would you like to do? ");
 
@@ -99,23 +101,19 @@ public class RoomAdventure{
         status = "I can't grab that";
         for(int i = 0; i < currentRoom.grabbables.length; i++){
             if (noun.equals(currentRoom.grabbables[i])){
-                for (int j = 0; j < inventory.length; j++){
-                    if (inventory[j] == null){
-                        inventory[j] = noun;
-                        status = String.format("Added %s to the inventory.", noun);
-                        break;
-                    }
+                inventory.add(noun);    //adds noun to the ArrayList which shortend up the original code a lot.
+                status = String.format("Added %s to inventory", noun);
                 }
             }
         }
 
-    }
-
     private static void setupGame(){
         // instantiate rooms
         Room room1 = new Room("Room 1");
-        Room room2 = new Room("Room2");
-        Room room3 = new Room("Room3");
+        Room room2 = new Room("Room 2");
+        Room room3 = new Room("Room 3");
+        Room room4 = new Room("Room 4");
+
 
         //setup Room 1
         String[] room1ExitDirections = {"east", "south"}; //initializing an array
@@ -141,36 +139,72 @@ public class RoomAdventure{
         room1.grabbables = room1Grabbables;
 
         //setup Room 2
-        String[] room2ExitDirections = {"east", "south"}; //initializing an array
-        Room[] room2ExitDestinations = {room2, room3};
+        String[] room2ExitDirections = {"west"}; //initializing an array
+        Room[] room2ExitDestinations = {room1};
 
-        String[] room2ItemDescriptions = {
-            "It is a char.",
-            "It is a desk. There is a key on it"
+        String[] room2Items ={
+            "rug",
+            "fireplace"
         };
 
-        String[] room2Grabbables = {"key"};
+        String[] room2ItemDescriptions = {
+            "It's like a chair but flat. There is a satsuma on it.",
+            "It's hot"
+        };
+
+        String[] room2Grabbables = {"satsuma"};
 
         room2.setExitDirections(room2ExitDirections);
         room2.setExitDestinations(room2ExitDestinations);
         room2.setItemDescriptions(room2ItemDescriptions);
+        room2.setItems(room2Items);
         room2.grabbables = room2Grabbables;
+        
 
         //setup Room 3
-        String[] room3ExitDirections = {"east", "south"}; //initializing an array
-        Room[] room3ExitDestinations = {room2, room3};
+        String[] room3ExitDirections = {"north", "east"}; //initializing an array
+        Room[] room3ExitDestinations = {room1, room4};
 
-        String[] room3ItemDescriptions = {
-            "It is a char.",
-            "It is a desk. There is a key on it"
+        String[] room3Items ={
+            "statue",
+            "bookshelf"
         };
 
-        String[] room3Grabbables = {"key"};
+        String[] room3ItemDescriptions = {
+            "It's the lady of the mist. A full sized replica.",
+            "There is one book on it."
+        };
+
+        String[] room3Grabbables = {"book"};
 
         room3.setExitDirections(room3ExitDirections);
         room3.setExitDestinations(room3ExitDestinations);
         room3.setItemDescriptions(room3ItemDescriptions);
+        room3.setItems(room3Items);
         room3.grabbables = room3Grabbables;
+
+
+        //setup Room 4
+        String[] room4ExitDirections = {"west"}; //initializing an array
+        Room[] room4ExitDestinations = {room3};
+
+        String[] room4Items ={
+            "statue",
+            "bookshelf"
+        };
+
+        String[] room4ItemDescriptions = {
+            "It's the lady of the mist. A full sized replica.",
+            "There is one book on it."
+        };
+
+        String[] room4Grabbables = {"book"};
+
+        room4.setExitDirections(room4ExitDirections);
+        room4.setExitDestinations(room4ExitDestinations);
+        room4.setItemDescriptions(room4ItemDescriptions);
+        room4.setItems(room4Items);
+        room4.grabbables = room4Grabbables;
 
         currentRoom = room1;
     }
@@ -253,11 +287,10 @@ class Room{
             result += items[i] + " "; //accessing items in a n array
         }
 
-        //for each loops
+        //add exits to the output
+        result += "\nExits: ";
         for (String direction : exitDirections){
-            result += String.format("%s", direction);
-
-            
+            result += String.format("%s", direction);   
         }
 
 
