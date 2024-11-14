@@ -1,6 +1,10 @@
 //Name: Reagan Jose
 //Date: 11/11/2024
 //Description: Room Adventure... one last time... finally... make it stop...
+//New Features:
+//1. Added Extra Rooms and Grabbables
+//2. Improved the inventory by making it into an ArrayList
+//3. Changed Exits and Items from lists to their own Classes
 
 import java.util.Scanner;
 //Array List package
@@ -13,11 +17,11 @@ public class RoomAdventure{
     */
     //static means it belongs to the class
     private static Room currentRoom;
-    private static ArrayList<String> inventory = new ArrayList<String>();
+    private static ArrayList<String> inventory = new ArrayList<String>();   //Inventory is now an ArrayList for expandability.
     private static String status;
 
     //constants - final makes it a constant
-    final private static String DEFAULT_STATUS = "Sottry, I don't undestand. Try [verb] [noun]";
+    final private static String DEFAULT_STATUS = "Sorry, I don't undestand. Try [verb] [noun]";
 
     public static void main(String[] args){
         setupGame();
@@ -68,29 +72,27 @@ public class RoomAdventure{
 
     }
     private static void handleGo(String noun){
-        String[] exitDirections = currentRoom.getExitDirections();
-        Room[] exitDestinations = currentRoom.getExitDestinations();
+        ArrayList<Exit> exits = currentRoom.getExits();
 
         status = "I don't see that room";
-        for(int i = 0; i < exitDirections.length; i++){
-            if(noun.equals(exitDirections[i])){
-                if(noun.equals(exitDirections[i])){
-                    currentRoom = exitDestinations[i];
+        //Array List For loop
+        for(Exit exit : exits){
+            if(noun.equals(exit.getDirection())){
+                currentRoom = exit.getDestination();
                     status = "Changed Room";
-                    break;   
-                }
+                    break;  
             }
         }
     }
 
     private static void handleLook(String noun){
-        String [] items = currentRoom.getItems();
-        String [] itemDescriptions = currentRoom.getItemDescriptions();
+        ArrayList<Item> items = currentRoom.getItems();
 
         status = "I don't see that item";
-        for(int i=0; i < items.length; i++){
-            if (noun.equals(items[i])){
-                status = itemDescriptions[i];
+        //Array List for loop
+        for(Item item : items){
+            if (noun.equals(item.getName())){
+                status = item.getDescription();
                 break;
             }
         }
@@ -108,105 +110,63 @@ public class RoomAdventure{
         }
 
     private static void setupGame(){
-        // instantiate rooms
-        Room room1 = new Room("Room 1");
-        Room room2 = new Room("Room 2");
-        Room room3 = new Room("Room 3");
-        Room room4 = new Room("Room 4");
+        //Items and Exits are now ArrayLists of Item objects and Exit objects.
 
-
-        //setup Room 1
-        String[] room1ExitDirections = {"east", "south"}; //initializing an array
-        Room[] room1ExitDestinations = {room2, room3};
-
-
-        String[] room1Items ={
-            "Chair",
-            "Desk"
-        };
-
-        String[] room1ItemDescriptions = {
-            "It is a char.",
-            "It is a desk. There is a key on it"
-        };
-
-        String[] room1Grabbables = {"key"};
-
-        room1.setExitDirections(room1ExitDirections);
-        room1.setExitDestinations(room1ExitDestinations);
-        room1.setItemDescriptions(room1ItemDescriptions);
-        room1.setItems(room1Items);
+        // Instantiate rooms
+        Room room1 = new Room("Earth");
+        Room room2 = new Room("Endurance Spacecraft");
+        Room room3 = new Room("Miller's Planet");
+        Room room4 = new Room("Mann's Planet");
+        Room room5 = new Room("Tesseract");
+    
+        // Setup Earth
+        String[] room1Grabbables = {"NASA_coordinates"};
+    
+        room1.addExit("north", room2);
+        room1.addItem("farmhouse", "Cooper's family farmhouse, surrounded by dust storms.");
+        room1.addItem("cornfield", "The vast cornfields where Cooper drives his truck.");
+        room1.addItem("anomaly", "NASA_coordinates. You can probably pick them up.");
         room1.grabbables = room1Grabbables;
-
-        //setup Room 2
-        String[] room2ExitDirections = {"west"}; //initializing an array
-        Room[] room2ExitDestinations = {room1};
-
-        String[] room2Items ={
-            "rug",
-            "fireplace"
-        };
-
-        String[] room2ItemDescriptions = {
-            "It's like a chair but flat. There is a satsuma on it.",
-            "It's hot"
-        };
-
-        String[] room2Grabbables = {"satsuma"};
-
-        room2.setExitDirections(room2ExitDirections);
-        room2.setExitDestinations(room2ExitDestinations);
-        room2.setItemDescriptions(room2ItemDescriptions);
-        room2.setItems(room2Items);
+    
+        // Setup Endurance Spacecraft
+        String[] room2Grabbables = {"space_suit"};
+    
+        room2.addExit("south", room1);
+        room2.addExit("west", room3);
+        room2.addItem("control_room", "The control center of the Endurance, with various monitors and controls.");
+        room2.addItem("cryo_pods", "Pods used for long-term hibernation during space travel.");
+        room2.addItem("space_suit", "A space suit. You can probably pick it up.");
         room2.grabbables = room2Grabbables;
-        
-
-        //setup Room 3
-        String[] room3ExitDirections = {"north", "east"}; //initializing an array
-        Room[] room3ExitDestinations = {room1, room4};
-
-        String[] room3Items ={
-            "statue",
-            "bookshelf"
-        };
-
-        String[] room3ItemDescriptions = {
-            "It's the lady of the mist. A full sized replica.",
-            "There is one book on it."
-        };
-
-        String[] room3Grabbables = {"book"};
-
-        room3.setExitDirections(room3ExitDirections);
-        room3.setExitDestinations(room3ExitDestinations);
-        room3.setItemDescriptions(room3ItemDescriptions);
-        room3.setItems(room3Items);
+    
+        // Setup Miller's Planet
+        String[] room3Grabbables = {"wreckage"};
+    
+        room3.addExit("east", room2);
+        room3.addExit("north", room4);
+        room3.addItem("massive_wave", "A towering wave, the most prominent feature of Miller's Planet.");
+        room3.addItem("ranger", "The small landing craft used for exploring the planet.");
+        room3.addItem("wreckage", "wreckage left over from the original team. I think they died. You can probably pick it up.");
         room3.grabbables = room3Grabbables;
+    
+        // Setup Mann's Planet
+        room4.addExit("south", room3);
+        room4.addExit("north", room5);
+        room4.addItem("frozen_landscape", "A barren, icy landscape stretching as far as the eye can see.");
+        room4.addItem("hibernation_pod", "Dr. Mann's hibernation pod, covered in frost.");
+    
+        // Setup Tesseract
+        String[] room5Grabbables = {"quantum_data"};
+    
+        room5.addExit("south", room4);
+        room5.addItem("bookshelf", "A strange, infinite array of bookshelves stretching in all directions.");
+        room5.addItem("time_ripple", "A visual representation of the bending of space-time.");
+        room5.addItem("TARS", "You radioed tars for the quantum_data. You can probably pick it up.");
 
-
-        //setup Room 4
-        String[] room4ExitDirections = {"west"}; //initializing an array
-        Room[] room4ExitDestinations = {room3};
-
-        String[] room4Items ={
-            "statue",
-            "bookshelf"
-        };
-
-        String[] room4ItemDescriptions = {
-            "It's the lady of the mist. A full sized replica.",
-            "There is one book on it."
-        };
-
-        String[] room4Grabbables = {"book"};
-
-        room4.setExitDirections(room4ExitDirections);
-        room4.setExitDestinations(room4ExitDestinations);
-        room4.setItemDescriptions(room4ItemDescriptions);
-        room4.setItems(room4Items);
-        room4.grabbables = room4Grabbables;
-
+        room5.grabbables = room5Grabbables;
+    
         currentRoom = room1;
+        
+        
     }
 
 
@@ -220,12 +180,16 @@ class Room{
     private String roomName;
 
     // a private instance variable that is an array of Strings
-    private String[] exitDirections; //west, east, north, south, up, down
-    private Room[] exitDestinations; //actual rooms tied to the directions west, east, ect.
+    //private String[] exitDirections; //west, east, north, south, up, down
+    //private Room[] exitDestinations; //actual rooms tied to the directions west, east, ect.
 
-    private String[] items; //item names like "key"
-    private String[] itemDescriptions; //ex: "a golden key. maybe we can take it"
+    //Array list of exits
+    private ArrayList<Exit> exits = new ArrayList<Exit>();
 
+    //Array Items
+    private ArrayList<Item> items = new ArrayList<Item>();
+
+    //List Grabbables
     public String[] grabbables;
 
     // constructor
@@ -241,40 +205,25 @@ class Room{
 
     //methods
     //setter ex:
-    public void setExitDirections(String[] dirs){
-        exitDirections = dirs;
 
+    //Exit Setter
+    public void addExit(String dir, Room destination){
+        exits.add(new Exit(dir, destination));
     }
 
-    // getter ex;
-    public String[] getExitDirections(){
-        return exitDirections;
+    //Exit Getter
+    public ArrayList<Exit> getExits(){
+        return exits;
     }
 
-    public void setExitDestinations(Room[] exitDestinations){
-        this.exitDestinations = exitDestinations;
+    //Item Setter
+    public void addItem(String name, String description){
+        items.add(new Item(name, description));
     }
 
-    public Room[] getExitDestinations(){
-        return this.exitDestinations;
-
-    }
-
-    public void setItems(String[] items){
-        this.items = items;
-
-    }
-
-    public String[] getItems(){
-        return this.items;
-    }
-
-    public void setItemDescriptions(String[] itemDescriptions){
-        this.itemDescriptions = itemDescriptions;
-    }
-
-    public String[] getItemDescriptions(){
-        return this.itemDescriptions;
+    //Item Getter
+    public ArrayList<Item> getItems(){
+        return items;
     }
 
     public String toString(){
@@ -283,14 +232,14 @@ class Room{
 
         result += "\nYou See: ";
         // for loop
-        for (int i = 0; i < items.length; i++){
-            result += items[i] + " "; //accessing items in a n array
+        for (Item item : items){
+            result += item.getName() + " "; //accessing items in a n array
         }
 
         //add exits to the output
         result += "\nExits: ";
-        for (String direction : exitDirections){
-            result += String.format("%s", direction);   
+        for (Exit exit : exits){
+            result += String.format("%s ", exit.getDirection());   
         }
 
 
@@ -298,4 +247,48 @@ class Room{
     }
  
 
+}
+
+//Item class for replacing parrallel list
+class Item{
+    public String name;
+    private String description;
+    
+    //contructor for item
+    public Item(String name, String description){
+        this.name = name;
+        this.description = description;
+    }
+
+    //name getter
+    public String getName(){
+        return name;
+    }
+
+    //description getter
+    public String getDescription(){
+        return description;
+    }
+}
+
+//Exit class for replacing parrallel list
+class Exit{
+    public String direction;
+    private Room destination;
+    
+    //contructor for item
+    public Exit(String direction, Room destination){
+        this.direction = direction;
+        this.destination = destination;
+    }
+
+    //direction getter
+    public String getDirection(){
+        return direction;
+    }
+
+    //location getter
+    public Room getDestination(){
+        return destination;
+    }
 }
